@@ -1,0 +1,41 @@
+code_block ::= {line}
+line ::= func_decl | var_decl | statement 
+
+func_decl ::= "function" [id] "(" param_decl ")" "{" code_block "}"
+param_decl ::= [id] {"," [id]}
+
+var_decl ::= ("let" | "const") id ["=" (string | int | id)]
+
+statement ::= if_chain_sm | while_sm | return_sm | expr
+
+if_chain_sm ::= if_sm {"else" if_sm} [else_sm]
+if_sm ::= "if" "(" expr ")" "{" code_block "}"
+else_sm ::= "else" "{" {line} "}"
+
+while_sm ::= "while" "(" expr ")" "{" code_block "}"
+
+expr ::= id "=" logical_or
+logical_or ::= logical_and ["||" logical_or]
+logical_and ::= equality_expr ["&&" logical_and]
+equality_expr ::= comparison_expr [("==" | "!=") equality_expr]
+comparison_expr ::= term [("<" | "<=" | ">=" | ">") comparison_expr]
+term ::= factor ["+" | "-" term]
+factor ::= unary ["*" | "/" factor]
+unary ::= ("!" | "+" | "-") group
+group ::= number | string | id | func_call | "(" expr ")"
+func_call ::= id "(" [expr] {"," [expr]} ")"
+
+(*
+expr ::= binary_expr | unary_expr | call_expr | (expr) | assignment_expr | string | num 
+
+binary_expr ::= expr operator expr
+unary_expr ::= unary_operator" expr
+call_expr ::= id "(" [expr {"," expr}]")"
+assignment_expr ::= id "=" expr
+*)
+
+(*an identifier*)
+id ::= /[a-zA-Z][a-zA-Z0-9_]/
+
+(*some kind of value*)
+val ::= value
