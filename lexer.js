@@ -11,8 +11,8 @@ module.exports = class Lexer {
         const CHAR_RE = /[a-zA-Z]/;
         const VAR_RE = /[a-zA-Z0-9_]/;
         const NUM_RE = /[0-9]/;
-        const OP_RE = /^(\.|!|\+|-|\*|\/|==|!=|&&|\|\||<|>|<=|>=|=|!=)$/;
-        const KEYWORD_RE = /^(let|const|if|else|while|function|return)$/;
+        const OP_RE = /^(!|\+|-|\*|\/|==|!=|&&|\|\||<|>|<=|>=|=|!=)$/;
+        const KEYWORD_RE = /^(let|const|if|else|while|function|return|print)$/;
 
         let token = {
             type: "",
@@ -26,6 +26,9 @@ module.exports = class Lexer {
 
         while (this.pos < this.code.length) {
             // assumes LF and not CRLF
+            if ((this.code[this.pos] + this.code[this.pos + 1]) === "//") {
+                while (this.code[this.pos] != "\n") this.pos++;
+            }
             if (this.code[this.pos] === "\n") {
                 this.line++;
             } else if (this.code[this.pos].match(CHAR_RE)) {
@@ -62,8 +65,7 @@ module.exports = class Lexer {
                 this.pos++;
                 break;
             } else if (this.code[this.pos].match(OP_RE)) {
-                token.type = "operator"
-                // check for double character operators
+                token.type = "operator";
                 const peek = (this.code[this.pos] + this.code[this.pos + 1])
                 if ((peek).match(OP_RE)) {
                     token.value = peek;
@@ -72,6 +74,12 @@ module.exports = class Lexer {
                     token.value = this.code[this.pos];
                     this.pos++;
                 }
+                break;
+            } else if ((this.code[this.pos] + this.code[this.pos + 1]).match(OP_RE)) {
+                // check for double character operators
+                token.type = "operator";
+                token.value = (this.code[this.pos] + this.code[this.pos + 1]);
+                this.pos += 2
                 break;
             } else if (this.code[this.pos] === ";") {
                 token.type = "semicolon";
@@ -91,6 +99,7 @@ module.exports = class Lexer {
             } else if (this.code[this.pos] === ",") {
                 token.type = "comma";
                 token.value = this.code[this.pos];
+                this.pos++;
                 break;
             }
 
@@ -101,7 +110,8 @@ module.exports = class Lexer {
             token.type = "EOF";
             token.value = null;
         } 
-        
+
+        token.line = this.line + 1;
         return token;
 
     }
