@@ -135,6 +135,10 @@ module.exports = class Executor {
                 return this.execNode(node.left) < this.execNode(node.right);
             } else if (node.operator === "<=") {
                 return this.execNode(node.left) <= this.execNode(node.right);
+            } else if (node.operator === "==") {
+                return this.execNode(node.left) === this.execNode(node.right);
+            } else if (node.operator === "!=") {
+                return this.execNode(node.left) !== this.execNode(node.right);
             }
         } else if (node.type === "LogicalExpression") {
             if (node.operator === "&&") {
