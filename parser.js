@@ -120,7 +120,8 @@ module.exports = class Parser {
     funcArg() {
         let args = [];
         let e = this.expr();
-        while (e) {
+
+        while (e !== undefined) {
             args.push(e);
             let tk = this.tokens[this.pos];
             if (tk.type === "comma") {
@@ -170,12 +171,12 @@ module.exports = class Parser {
 
     unary() {
         let tk = this.tokens[this.pos];
-        if (tk.type === "operator" && tk.value.match(/^(\+|-)$/)) {
+        if (tk.type === "operator" && tk.value.match(/^(\+|-|!)$/)) {
             this.match("operator");
             return {
-                type: "BinaryExpression",
+                type: "UnaryExpression",
                 operator: tk.value,
-                arguent: this.group()
+                argument: this.group()
             }
         } else {
             return this.group();
@@ -389,7 +390,6 @@ module.exports = class Parser {
         } else if (tk.type === "keyword" && tk.value === "return") {
             return this.return_sm();
         }
-        
         const e = this.expr();
         if (e) {
             this.match("semicolon", ";");
@@ -406,11 +406,13 @@ module.exports = class Parser {
             } else if (tk.value === "function") {
                 return this.funcDecl();
             } else if (tk.value === "print") {
-                // consumm the print and the next val
-                this.pos += 2;
+                // consume the print
+                this.match("keyword", "print");
+                const val = this.expr();
+                this.match("semicolon");
                 return {
                     type: "Print",
-                    value: this.expr()
+                    value: val
                 }
             } else {
                 return this.statement();
