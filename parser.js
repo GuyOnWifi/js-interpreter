@@ -82,6 +82,10 @@ module.exports = class Parser {
 
     paramDecl() {
         let params = []
+        if (this.tokens[this.pos].type !== "identifier") {
+            return params;
+        }
+
         let tk = this.match("identifier");
         params.push(tk.value);
         
@@ -120,7 +124,8 @@ module.exports = class Parser {
     funcArg() {
         let args = [];
         let e = this.expr();
-
+        if (e === undefined) return args;
+        
         while (e !== undefined) {
             args.push(e);
             let tk = this.tokens[this.pos];
