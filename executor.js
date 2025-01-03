@@ -19,8 +19,7 @@ module.exports = class Executor {
         if (node === undefined) return;
         if (node.type === "VariableDeclaration") {
             if (this.searchIdentifiers(node.identifier)) {
-                console.error(`Duplicate identifier ${node.identifier}`);
-                process.exit(1);
+                throw new Error(`Duplicate identifier ${node.identifier}`);
             }
             this.variables.push({
                 identifier: node.identifier,
@@ -58,8 +57,7 @@ module.exports = class Executor {
         } else if (node.type === "CallExpression") {
             const func = this.functions.find(f => f.identifier === node.callee);
             if (!func) {
-                console.error(`Undefined function ${node.callee}`);
-                process.exit(1);
+                throw new Error(`Undefined function ${node.callee}`);
             }
 
             // push the arguments into variables
@@ -80,8 +78,7 @@ module.exports = class Executor {
             return res;
         } else if (node.type === "ReturnStatement") {
             if (!inFunctionCall) {
-                console.error("Return outside of function call");
-                process.exit(1);
+                throw new Error("Return outside of function call");
             }
             return {
                 type: "return",
@@ -92,20 +89,17 @@ module.exports = class Executor {
         } else if (node.type === "Identifier") {
             const id = this.searchIdentifiers(node.name);
             if (!id) {
-                console.error(`Identifier ${node.name} does not exist`);
-                process.exit(1);
+                throw new Error(`Identifier ${node.name} does not exist`);
             }
 
             return id.value;
         } else if(node.type === "AssignmentExpression") {
             const id = this.searchIdentifiers(node.left);
             if (!id) {
-                console.error(`Identifier ${node.left} does not exist`);
-                process.exit(1);
+                throw new Error(`Identifier ${node.left} does not exist`);
             }
             if (id.type === "const") {
-                console.error(`Assignment on const identifier ${id.identifier}`)
-                process.exit(1);
+                throw new Error(`Assignment on const identifier ${id.identifier}`)
             }
             id.value = this.execNode(node.right);
         } else if (node.type === "UnaryExpression") {
@@ -154,8 +148,7 @@ module.exports = class Executor {
 
     execute() {
         if (this.ast.type !== "Program") {
-            console.error("Invalid ast");
-            process.exit(1);
+            throw new Error("Invalid ast");
         }
 
         for (const n of this.ast.body) {

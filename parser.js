@@ -18,16 +18,14 @@ module.exports = class Parser {
                 this.pos++;
                 return tk;
             } else {
-                console.error(`Expected ${type} "${val}", got ${tk.type} "${tk.value}" (Line ${tk.line})`);
-                process.exit(1);
+                throw new Error(`Expected ${type} "${val}", got ${tk.type} "${tk.value}" (Line ${tk.line})`);
             }
         } else {
             if (type === tk.type) {
                 this.pos++;
                 return tk;
             } else {
-                console.error(`Expected ${type}, got ${tk.type} ${tk.value} (Line ${tk.line})`);
-                process.exit(1);
+                throw new Error(`Expected ${type}, got ${tk.type} ${tk.value} (Line ${tk.line})`);
             }
         }
     }
@@ -136,8 +134,7 @@ module.exports = class Parser {
                 return args;
             }
         }
-        console.error("Expected arguments after comma");
-        process.exit(1);
+        throw new Error("Expected arguments after comma");
     }
 
     group() {
