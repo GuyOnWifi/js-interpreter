@@ -1,0 +1,4 @@
+.cm-scroller { overflow: auto; min-height: 90vh }
+.cm-line {
+    color: white;
+}
