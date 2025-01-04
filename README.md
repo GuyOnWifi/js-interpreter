@@ -1,4 +1,4 @@
-Simple interpreter for a JS-like language
+Simple interpreter for a JS-like language. Try it out [here!](https://guyonwifi.github.io/js-interpreter/)
 
 # Motivation
 This project was inspired by [Write a C compiler](https://github.com/lotabout/write-a-C-interpreter)
