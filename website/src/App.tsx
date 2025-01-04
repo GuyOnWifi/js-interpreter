@@ -14,7 +14,18 @@ import Executor from "./interpreter/executor.js";
 import './App.css'
 
 function App() {
-  const [code, setCode] = useState(`print "Hello World!";`);
+  const [code, setCode] = useState(
+    `function countToTen() {
+    let i = 0;
+    while (i < 10) {
+        print i;
+        i = i + 1;
+    }
+}
+
+countToTen();`
+  );
+  
   const [output, setOutput] = useState(`Output will show up here...`);
 
   function runCode() {
