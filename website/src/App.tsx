@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
+import { json } from '@codemirror/lang-json';
 import { EditorView, EditorState } from '@uiw/react-codemirror';
 
 // @ts-ignore
@@ -26,39 +27,56 @@ function App() {
 countToTen();`
   );
   
+  const [display, setDisplay] = useState("");
+  const [mode, setMode] = useState("output");
+
   const [output, setOutput] = useState(`Output will show up here...`);
+  const [tokens, setTokens] = useState("[]")
+  const [ast, setAST] = useState("{}");
 
   function runCode() {
     setOutput("");
     // Lexing
     const lexer = new Lexer(code);
     
-    let tokens = [];
-    tokens.push(lexer.next());
+    let tks = [];
+    tks.push(lexer.next());
 
-    while (tokens[tokens.length - 1].type !== "EOF") {
-        tokens.push(lexer.next());
+    while (tks[tks.length - 1].type !== "EOF") {
+        tks.push(lexer.next());
     }
+    
+    setTokens(JSON.stringify(tks, null, 2));
 
     // Parsing
-    const parser = new Parser(tokens);
-    let ast;
+    const parser = new Parser(tks);
+    let tree;
     try {
-      ast = parser.createTree();
+      tree = parser.createTree();
     } catch(err : any) {
       return setOutput("Error: " + err.message);
     }
-
-    console.dir(ast, {depth: null});
+    setAST(JSON.stringify(tree, null, 2));
 
     // Executing
-    const executor = new Executor(ast, setOutput);
+    const executor = new Executor(tree, setOutput);
     try {
       executor.execute();
     } catch(err : any) {
       return setOutput("Error: " + err.message);
     }
   }
+
+  useEffect(() => {
+    if (mode === "output") {
+      setDisplay(output);
+    } else if (mode === "tokens") {
+      setDisplay(tokens)
+    } else if (mode === "ast") {
+      setDisplay(ast);
+    }
+  }, [mode, output, tokens, ast])
+
 
   return (
     <>
@@ -83,13 +101,15 @@ countToTen();`
         </div>
 
         <div className="flex-1 flex flex-col max-w-[50%]">
-          <div className="h-10 flex flex-row items-center">
-            <span className="bg-[#1e1e1e] self-end p-2 font-bold">Output</span>
+          <div className="h-10 flex flex-row items-center gap-2">
+            <span className="bg-[#1e1e1e] self-end p-2 font-bold border-gray-600 border-[1px] border-b-0 cursor-pointer hover:brightness-125" onClick={() => {setMode("output")}} style={{filter: (mode === "output" ? "brightness(150%)" : "")}}>Output</span>
+            <span className="bg-[#1e1e1e] self-end p-2 font-bold border-gray-600 border-[1px] border-b-0 cursor-pointer hover:brightness-125" onClick={() => {setMode("ast")}} style={{filter: (mode === "ast" ? "brightness(150%)" : "")}}>AST</span>
+            <span className="bg-[#1e1e1e] self-end p-2 font-bold border-gray-600 border-[1px] border-b-0 cursor-pointer hover:brightness-125" onClick={() => {setMode("tokens")}} style={{filter: (mode === "tokens" ? "brightness(150%)" : "")}}>Token Stream</span>
           </div>
           <CodeMirror
             id="console"
-            value={output}
-            theme={[vscodeDark]}
+            value={display}
+            theme={[vscodeDark, json()]}
             basicSetup={{
               lineNumbers: false,
               highlightActiveLine: false,
