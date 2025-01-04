@@ -36,9 +36,15 @@ The interpreter.js is the main file that takes in the code from ./code.txt, and 
 - Built-in print keyword for output
 
 # How to run the code
-All the code is in the code.txt file. To run the interpreter, simply run 
+The code that is to be interpreted should be placed in the code.txt file. To run the interpreter, simply run 
 ```bash
 node interpreter.js
+```
+
+To run the online interpreter, run
+```bash
+cd website
+npm run dev
 ```
 
 # Resources & Acknowledgements
