@@ -80,9 +80,9 @@ countToTen();`
 
   return (
     <>
-      <div className="flex flex-row h-[100vh] w-[100vw] max-h-[100vh] max-w-[100vw] gap-4 p-4">
+      <div className="flex flex-col md:flex-row h-[100vh] w-[100vw] max-h-[100vh] max-w-[100vw] gap-4 p-4">
 
-        <div className="flex-1 flex flex-col max-w-[50%]">
+        <div className="flex-1 flex flex-col md:max-w-[50%]">
           <div className="h-10 flex flex-row items-center">
             <span className="bg-[#1e1e1e] self-end p-2 font-bold">Code</span>
             <span className="ml-auto bg-green-500 px-4 py-2 rounded hover:bg-green-400 cursor-pointer" onClick={runCode}>Run</span>
@@ -100,7 +100,7 @@ countToTen();`
           />
         </div>
 
-        <div className="flex-1 flex flex-col max-w-[50%]">
+        <div className="flex-1 flex flex-col md:max-w-[50%]">
           <div className="h-10 flex flex-row items-center gap-2">
             <span className="bg-[#1e1e1e] self-end p-2 font-bold border-gray-600 border-[1px] border-b-0 cursor-pointer hover:brightness-125" onClick={() => {setMode("output")}} style={{filter: (mode === "output" ? "brightness(150%)" : "")}}>Output</span>
             <span className="bg-[#1e1e1e] self-end p-2 font-bold border-gray-600 border-[1px] border-b-0 cursor-pointer hover:brightness-125" onClick={() => {setMode("ast")}} style={{filter: (mode === "ast" ? "brightness(150%)" : "")}}>AST</span>

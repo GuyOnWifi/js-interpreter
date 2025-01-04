@@ -25,17 +25,5 @@ unary ::= ("!" | "+" | "-") group
 group ::= number | string | id | func_call | "(" expr ")"
 func_call ::= id "(" [expr] {"," [expr]} ")"
 
-(*
-expr ::= binary_expr | unary_expr | call_expr | (expr) | assignment_expr | string | num 
-
-binary_expr ::= expr operator expr
-unary_expr ::= unary_operator" expr
-call_expr ::= id "(" [expr {"," expr}]")"
-assignment_expr ::= id "=" expr
-*)
-
 (*an identifier*)
 id ::= /[a-zA-Z][a-zA-Z0-9_]/
-
-(*some kind of value*)
-val ::= value

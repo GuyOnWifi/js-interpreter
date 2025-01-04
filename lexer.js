@@ -17,6 +17,7 @@ module.exports = class Lexer {
         let token = {
             type: "",
             value: "",
+            line: 0,
         }
 
         if (this.pos >= this.code.length) {
