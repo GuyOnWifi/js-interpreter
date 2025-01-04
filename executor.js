@@ -89,7 +89,7 @@ module.exports = class Executor {
         } else if (node.type === "Identifier") {
             const id = this.searchIdentifiers(node.name);
             if (!id) {
-                throw new Error(`Identifier ${node.name} does not exist`);
+                throw new Error(`Identifier "${node.name}" does not exist`);
             }
 
             return id.value;
@@ -98,8 +98,8 @@ module.exports = class Executor {
             if (!id) {
                 throw new Error(`Identifier ${node.left} does not exist`);
             }
-            if (id.type === "const") {
-                throw new Error(`Assignment on const identifier ${id.identifier}`)
+            if (id.kind === "const") {
+                throw new Error(`Assignment on constant variable "${id.identifier}"`)
             }
             id.value = this.execNode(node.right);
         } else if (node.type === "UnaryExpression") {
